@@ -8,4 +8,10 @@ Weatheroo is an android app to provide weather conditions in your current locati
     <td><img src="https://github.com/Dhananjai543/Weatheroo/blob/master/screen_3.png" width=270 height=480></td>
   </tr>
  </table>
+ <table>
+  <tr>
+    <td><img src="https://github.com/Dhananjai543/Weatheroo/blob/master/screen_4.png" width=270 height=480></td>
+    <td><img src="https://github.com/Dhananjai543/Weatheroo/blob/master/screen_5.png" width=270 height=480></td>
+  </tr>
+ </table>
 
