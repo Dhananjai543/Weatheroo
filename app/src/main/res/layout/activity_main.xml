@@ -32,6 +32,35 @@
             android:padding="@dimen/main_screen_content_padding"
             tools:context=".MainActivity">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:background="@color/white"
+                android:layout_marginBottom="5dp">
+
+                <EditText
+                    android:id="@+id/city_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Enter city"
+                    android:padding="5dp"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:background="@color/main_screen_content_background_color"/>
+
+                <ImageButton
+                    android:id="@+id/btn_search_city"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@string/image_contentDescription"
+                    android:padding="2dp"
+                    android:src="@drawable/ic_city_search" />
+            </LinearLayout>
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="30dp"

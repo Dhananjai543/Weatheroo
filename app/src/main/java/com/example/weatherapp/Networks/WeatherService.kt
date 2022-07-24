@@ -14,4 +14,10 @@ interface WeatherService {
         @Query("units") units: String?,
         @Query("appid") appid: String?,
     ) : Call<WeatherResponse>
+
+    @GET("2.5/weather?")
+    fun getWeatherFromCityName(
+        @Query("q") q: String?,
+        @Query("appid") appid: String?,
+    ) : Call<WeatherResponse>
 }

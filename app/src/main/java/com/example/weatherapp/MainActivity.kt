@@ -116,6 +116,70 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
             }
 
+        btn_search_city.setOnClickListener {
+            if(city_name.text.toString().trim().isNotEmpty()){
+                getLocationWeatherDetailsUsingCityName(city_name.text.toString().trim())
+            }
+        }
+
+    }
+
+    private fun getLocationWeatherDetailsUsingCityName(q: String){
+        Log.i("City Name", "$q")
+        if(Constants.isNetworkAvailable(this)){
+            val retrofit : Retrofit = Retrofit.Builder()
+                .baseUrl(Constants.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            val service = retrofit.create(WeatherService::class.java)
+
+            val listCall: Call<WeatherResponse> = service.getWeatherFromCityName(q, Constants.APP_ID)
+
+            showCustomProgressDialog()
+
+            listCall.enqueue(object : Callback<WeatherResponse>{
+                @RequiresApi(Build.VERSION_CODES.N)
+                override fun onResponse(response: Response<WeatherResponse>?, retrofit: Retrofit?) {
+                    if(response!!.isSuccess){
+                        hideCustomProgressDialog()
+                        val weatherList: WeatherResponse = response.body()
+
+                        val weatherResponseJsonString = Gson().toJson(weatherList) //this return a string
+                        Log.i("JSON Result","$weatherResponseJsonString")
+                        val editor = mSharedPreferences.edit()
+                        //Value will be stored corresponding to key WEATHER_RESPONSE_DATA
+                        editor.putString(Constants.WEATHER_RESPONSE_DATA, weatherResponseJsonString)
+                        editor.apply()
+                        Log.i("Response Result", "$weatherList")
+                        setUpUI()
+                    }else{
+                        hideCustomProgressDialog()
+                        val rc = response.code()
+                        when(rc){
+                            400 -> {
+                                Log.e("Error 400", "Bad Connection")
+                            }
+                            404 -> {
+                                Log.e("Error 404", "Not Found")
+                                Toast.makeText(this@MainActivity,"City Not found",Toast.LENGTH_SHORT).show()
+                            }
+                            else -> {
+                                Log.e("Error", "${response.code()}")
+                            }
+                        }
+                    }
+                }
+
+                override fun onFailure(t: Throwable?) {
+                    Log.e("Error/Failure", t!!.message.toString())
+                    hideCustomProgressDialog()
+                }
+
+            })
+        }else{
+            Toast.makeText(this, "Internet Not Connected",Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getLocationWeatherDetails(latitude: Double, longitude: Double){
@@ -148,6 +212,7 @@ class MainActivity : AppCompatActivity() {
                         Log.i("Response Result", "$weatherList")
                         setUpUI()
                     }else{
+                        hideCustomProgressDialog()
                         val rc = response.code()
                         when(rc){
                             400 -> {
@@ -263,7 +328,7 @@ class MainActivity : AppCompatActivity() {
 
         if(!weatherResponseJsonString.isNullOrEmpty()){
             val weatherList = Gson().fromJson(weatherResponseJsonString, WeatherResponse::class.java)
-
+            Log.i("json result",weatherResponseJsonString)
             for(i in weatherList.weather.indices){
                 Log.i("Weather name", weatherList.weather.toString())
                 tv_main.text = weatherList.weather[i].main
